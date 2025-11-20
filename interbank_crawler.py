@@ -12,7 +12,7 @@ from create_logger import workflow_logger
 
 # Load env variables
 load_dotenv()
-FILE_NAME = os.getenv('FILE_NAME')
+FILE_NAME = os.getenv('INTERBANK_FILE')
 daily_url = os.getenv('DAILY_INTERBANK_URL')
 NOTI_EMAIL = os.getenv('NOTI_EMAIL')
 RECEIPENTS = os.getenv('RECEIPENTS')

@@ -19,7 +19,6 @@ LOG_FOLDER = os.getenv('LOG_FOLDER')
 
 NOTI_EMAIL = os.getenv('NOTI_EMAIL')
 RECEIPENTS = os.getenv('RECEIPENTS')
-# RECEIPENTS = 'nguyengiahongduc@gmail.com, DucNGH@fpts.com.vn, TungTNA@fpts.com.vn'
 
 url = os.getenv('OMO_URL')
 file_path = os.path.join(DATA_FOLDER, FILE_NAME)
