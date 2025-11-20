@@ -3,11 +3,12 @@ import pandas as pd
 from io import StringIO
 from datetime import datetime
 from bs4 import BeautifulSoup
-import logging
-from logging.handlers import RotatingFileHandler
+
 from send_email import send_email
 from dotenv import load_dotenv
 import os
+
+from create_logger import workflow_logger
 
 # Load env variables
 load_dotenv()
@@ -23,19 +24,11 @@ FPTS_PROXY = os.getenv('FPTS_PROXY')
 file_path = os.path.join(DATA_FOLDER, FILE_NAME)
 log_file = os.path.join(LOG_FOLDER, "interbank-crawler.log")
 
-# Logging handler
-logger = logging.getLogger('interbank-crawler')
-logger.setLevel(logging.INFO)
-
-handler = RotatingFileHandler(
-    log_file, maxBytes=5_000_000, backupCount=5 , encoding='utf-8'
-)
-formatter = logging.Formatter(
-    '%(asctime)s | %(levelname)s | %(message)s',
-    datefmt="%Y-%m-%d %H:%M:%S"
-)
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+# Logger
+logger = workflow_logger(
+    name='interbank-crawler',
+    log_file=log_file
+).get_logger()
 
 # Read old data
 old_data = pd.read_excel(file_path)
