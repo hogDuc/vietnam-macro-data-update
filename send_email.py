@@ -13,7 +13,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 FPTS_PROXY = os.getenv('FPTS_PROXY')
-
+os.environ['HTTP_PROXY'] = FPTS_PROXY
+os.environ['HTTPS_PROXY'] = FPTS_PROXY
 
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
@@ -29,7 +30,7 @@ def create_token(SCOPE):
 
     print("Token saved to creds/token.json")
 
-def send_email(sender:str, receiver:str, body:str, subject:str):
+def send_email(sender:str, receiver, body:str, subject:str):
     if 'token.json' not in os.listdir('creds'):
         create_token(SCOPES)
 
@@ -38,9 +39,12 @@ def send_email(sender:str, receiver:str, body:str, subject:str):
     # Load token
     creds = Credentials.from_authorized_user_file(os.path.join('creds', "token.json"))
 
+    if creds.expired and creds.refresh_token:
+        creds.refresh(Request())
+
     message = MIMEMultipart('alternative')
     message["From"] = sender
-    message["To"] = ", ".join(receiver)
+    message["To"] = receiver
     message["Subject"] = subject
     message.attach(MIMEText(body, 'html'))
 
@@ -65,7 +69,13 @@ def send_email(sender:str, receiver:str, body:str, subject:str):
         proxies=proxies,
     )
 
-# Test Email
+    # print(response.text)
+
+
+# NOTI_EMAIL = os.getenv('NOTI_EMAIL')
+# RECEIPANT = os.getenv('RECEIPANT')
+
+# # Test Email
 # current_date = "20-11-2025"
 # html_res = "Table Goes Here"
 # send_email(

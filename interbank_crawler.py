@@ -14,7 +14,7 @@ load_dotenv()
 FILE_NAME = os.getenv('FILE_NAME')
 daily_url = os.getenv('DAILY_INTERBANK_URL')
 NOTI_EMAIL = os.getenv('NOTI_EMAIL')
-RECEIPANT = os.getenv('RECEIPANT')
+RECEIPENTS = os.getenv('RECEIPENTS')
 DATA_FOLDER = os.getenv('DATA_FOLDER')
 LOG_FOLDER = os.getenv('LOG_FOLDER')
 FPTS_PROXY = os.getenv('FPTS_PROXY')
@@ -31,7 +31,7 @@ handler = RotatingFileHandler(
     log_file, maxBytes=5_000_000, backupCount=5 , encoding='utf-8'
 )
 formatter = logging.Formatter(
-    '%(asctime)s | %(levelname)s | %(name)s | %(message)s',
+    '%(asctime)s | %(levelname)s | %(message)s',
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 handler.setFormatter(formatter)
@@ -83,25 +83,26 @@ if current_date > latest_date:
         # Send notification email
         send_email(
             sender=NOTI_EMAIL,
-            receiver=RECEIPANT,
-            subject=f"Interbank rate report | {current_date}",
+            receiver=RECEIPENTS,
+            subject=f"Interbank rate report | {current_date.date()}",
             body=f"""
             <html><body>
-                <h3>Crawler Report for {current_date}</h3>
+                <h3>Crawler Report for {current_date.date()}</h3>
                 {html_res}
             </body></html>
             """
         )
 
     except Exception as error:
-        logger.exception(f"Error at {current_date}")
+        logger.exception(f"Error at {current_date.date()}")
+
         send_email(
             sender=NOTI_EMAIL,
-            receiver=RECEIPANT,
-            subject=f"Interbank Crawler Failed | {current_date}",
+            receiver=RECEIPENTS,
+            subject=f"Interbank Crawler Failed | {current_date.date()}",
             body=f"""
             <html><body>
-                <h3>Crawler failed on {current_date}</h3>
+                <h3>Crawler failed on {current_date.date()}</h3>
                 {error}
             </body></html>
             """
@@ -109,14 +110,14 @@ if current_date > latest_date:
 
 else:
     logger.info(f'Data is already updated')
-    
+
     send_email(
         sender=NOTI_EMAIL,
-        receiver=RECEIPANT,
-        subject=f"No new Data | {current_date}",
+        receiver=RECEIPENTS,
+        subject=f"No new Data | {current_date.date()}",
         body=f"""
         <html><body>
-            <h3>Crawler Report on {current_date}</h3>
+            <h3>Crawler Report on {current_date.date()}</h3>
             Data is either already present in the database, or it's not updated on the official website. Please review
         </body></html>
         """
